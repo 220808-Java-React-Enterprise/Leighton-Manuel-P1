@@ -4,9 +4,11 @@ import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.InvalidUserException;
 
+
 public class UserService {
 
     private final UserDAO userDAO;
+
 
     public UserService(UserDAO userDAO) {
         this.userDAO = userDAO;
@@ -43,4 +45,5 @@ public class UserService {
     public void resetUserPassword (String id, String password) {
         userDAO.resetPassword(id, password);
     }
+
 }
