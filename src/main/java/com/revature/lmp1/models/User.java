@@ -1,16 +1,27 @@
 package com.revature.lmp1.models;
 
 public class User {
-    public String id;
-    public String username;
-    public String email;
-    public String password;
-    public String givenName;
-    public String surname;
-    public boolean isActive;
-    public String roleId;
+    private String id;
+    private String username;
+    private String email;
+    private String password;
+    private String givenName;
+    private String surname;
+    private boolean isActive;
+    private String role_id;
 
     public User() {
+    }
+
+    public User(String id, String username, String email, String password, String givenName, String surname, boolean isActive, String role_id){
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.givenName = givenName;
+        this.surname = surname;
+        this.isActive = isActive;
+        this.role_id = role_id;
     }
 
     public String getId() {
@@ -70,11 +81,11 @@ public class User {
     }
 
     public String getRoleId() {
-        return roleId;
+        return role_id;
     }
 
     public void setRoleId(String roleId) {
-        this.roleId = roleId;
+        this.role_id = roleId;
     }
 
     @Override
@@ -87,7 +98,7 @@ public class User {
                 ", givenName='" + givenName + '\'' +
                 ", surname='" + surname + '\'' +
                 ", isActive=" + isActive +
-                ", roleId='" + roleId + '\'' +
+                ", roleId='" + role_id + '\'' +
                 '}';
     }
 }

@@ -4,21 +4,34 @@ import java.sql.Blob;
 import java.time.LocalDateTime;
 
 public class Reimbursement {
-    public String id;
-    public int amount;
-    public LocalDateTime submitted;
-    public LocalDateTime resolved;
-    public String description;
-    public Blob receipt;
-    public String paymentId;
-    public String authorId;
-    public String resolverId;
-    public String statusId;
-    public String typeId;
+    private String id;
+    private int amount;
+    private LocalDateTime submitted;
+    private LocalDateTime resolved;
+    private String description;
+    private Blob receipt;
+    private String payment_id;
+    private String author_id;
+    private String resolver_id;
+    private String status_id;
+    private String type_id;
 
     public Reimbursement() {
     }
 
+    public Reimbursement(String id, int amount, LocalDateTime submitted, LocalDateTime resolved,String description, Blob receipt, String payment_id, String author_id, String resolver_id, String status_id, String type_id){
+        this.id = id;
+        this.amount = amount;
+        this.submitted = submitted;
+        this.resolved = resolved;
+        this.description = description;
+        this.receipt = receipt;
+        this.payment_id = payment_id;
+        this.author_id = author_id;
+        this.resolver_id = resolver_id;
+        this.status_id = status_id;
+        this.type_id = type_id;
+    }
     public String getId() {
         return id;
     }
@@ -68,43 +81,43 @@ public class Reimbursement {
     }
 
     public String getPaymentId() {
-        return paymentId;
+        return payment_id;
     }
 
     public void setPaymentId(String paymentId) {
-        this.paymentId = paymentId;
+        this.payment_id = paymentId;
     }
 
     public String getAuthorId() {
-        return authorId;
+        return author_id;
     }
 
     public void setAuthorId(String authorId) {
-        this.authorId = authorId;
+        this.author_id = authorId;
     }
 
     public String getResolverId() {
-        return resolverId;
+        return resolver_id;
     }
 
     public void setResolverId(String resolverId) {
-        this.resolverId = resolverId;
+        this.resolver_id = resolverId;
     }
 
     public String getStatusId() {
-        return statusId;
+        return status_id;
     }
 
     public void setStatusId(String statusId) {
-        this.statusId = statusId;
+        this.status_id = statusId;
     }
 
     public String getTypeId() {
-        return typeId;
+        return type_id;
     }
 
     public void setTypeId(String typeId) {
-        this.typeId = typeId;
+        this.type_id = typeId;
     }
 
     @Override
@@ -116,11 +129,11 @@ public class Reimbursement {
                 ", resolved=" + resolved +
                 ", description='" + description + '\'' +
                 ", receipt=" + receipt +
-                ", paymentId='" + paymentId + '\'' +
-                ", authorId='" + authorId + '\'' +
-                ", resolverId='" + resolverId + '\'' +
-                ", statusId='" + statusId + '\'' +
-                ", typeId='" + typeId + '\'' +
+                ", paymentId='" + payment_id + '\'' +
+                ", authorId='" + author_id + '\'' +
+                ", resolverId='" + resolver_id + '\'' +
+                ", statusId='" + status_id + '\'' +
+                ", typeId='" + type_id + '\'' +
                 '}';
     }
 }
