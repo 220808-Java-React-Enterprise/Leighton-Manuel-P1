@@ -1,6 +1,7 @@
 package com.revature.lmp1.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.services.UserService;
@@ -36,11 +37,37 @@ public class UserServlet extends HttpServlet {
 
                 resp.setStatus(200);
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(createdUser.getId()));
+                resp.getWriter().write(mapper.writeValueAsString(createdUser));
             } else {
                 System.out.println("Error");
             }
+
+
         } catch (InvalidRequestException e) {
+            resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        } catch (ResourceConflictException e) {
+            resp.setStatus(409);
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            LoginRequest request1 = mapper.readValue(req.getInputStream(), LoginRequest.class);
+
+            String[] path = req.getRequestURI().split("/");
+
+            if (path[3].equals("login")) {
+                User currentUser = userService.login(request1);
+
+                resp.setStatus(200);
+                resp.setContentType("application/json");
+                resp.getWriter().write(mapper.writeValueAsString(currentUser.getId()));
+            } else {
+                System.out.println("Error");
+            }
+        }catch (InvalidRequestException e) {
             resp.setStatus(404);
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {

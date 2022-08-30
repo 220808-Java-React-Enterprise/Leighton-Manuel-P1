@@ -1,6 +1,7 @@
 package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.UserDAO;
+import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
@@ -31,8 +32,8 @@ public class UserService {
                                 user = new User(
                                         UUID.randomUUID().toString(),
                                         request.getUsername(),
-                                        request.getPassword1(),
                                         request.getEmail(),
+                                        request.getPassword1(),
                                         request.getGivenName(),
                                         request.getSurname()
                                 );
@@ -47,9 +48,9 @@ public class UserService {
         return user;
     }
 
-    public User login(String username, String password) {
-        User user = userDAO.getByUsernameAndPassword(username, password);
-        if (user == null) throw new InvalidUserException("User not found");
+    public User login(LoginRequest request) {
+        User user = userDAO.getByUsernameAndPassword(request.getUsername(), request.getPassword());
+        if (user == null) throw new InvalidRequestException("User not found");
         return user;
     }
 
@@ -59,7 +60,7 @@ public class UserService {
 
     public User getById(String id) {
         User user = userDAO.getById(id);
-        if (user == null) throw new InvalidUserException("User not found");
+        if (user == null) throw new InvalidRequestException("User not found");
         return user;
     }
 
