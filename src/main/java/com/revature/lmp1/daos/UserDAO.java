@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import static java.sql.Types.NULL;
+
 public class UserDAO implements CrudDAO<User>{
     @Override
     public void save(User obj) {
@@ -21,8 +23,8 @@ public class UserDAO implements CrudDAO<User>{
             ps.setString(4,obj.getPassword());
             ps.setString(5,obj.getGivenName());
             ps.setString(6,obj.getSurname());
-            ps.setBoolean(7,obj.isActive());
-            ps.setString(8,obj.getRoleId());
+            ps.setNull(7, NULL);
+            ps.setNull(8, NULL);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("Error. Could not save user to database");
@@ -122,5 +124,32 @@ public class UserDAO implements CrudDAO<User>{
             throw new InvalidSQLException("Error connecting to database");
         }
 
+    }
+
+    public String getUsername(String username) {
+        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT (username) FROM users WHERE username = ?");
+            ps.setString(1,username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("username");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return null;
+    }
+
+    public String getEmail(String email) {
+        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT (email) FROM users WHERE email = ?");
+            ps.setString(1,email);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("username");
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return null;
     }
 }
