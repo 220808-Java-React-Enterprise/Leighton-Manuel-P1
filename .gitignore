@@ -28,4 +28,5 @@ hs_err_pid*
 *target/
 *.DS_Store
 *.properties
-*ConnectionFactory.java
+ConnectionFactory.java
+*utils/database/
