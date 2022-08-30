@@ -24,6 +24,15 @@ public class User {
         this.role_id = role_id;
     }
 
+    public User(String id, String username, String email, String password, String givenName, String surname){
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.givenName = givenName;
+        this.surname = surname;
+    }
+
     public String getId() {
         return id;
     }
