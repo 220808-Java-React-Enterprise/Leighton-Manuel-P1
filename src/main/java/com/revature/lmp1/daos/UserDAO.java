@@ -26,6 +26,7 @@ public class UserDAO implements CrudDAO<User>{
             ps.setNull(7, NULL);
             ps.setNull(8, NULL);
             ps.executeUpdate();
+            System.out.println("Got to the save part");
         } catch (SQLException e) {
             throw new InvalidSQLException("Error. Could not save user to database");
         }
