@@ -1,6 +1,7 @@
 package com.revature.lmp1.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.services.UserService;
@@ -36,15 +37,20 @@ public class UserServlet extends HttpServlet {
 
                 resp.setStatus(200);
                 resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(createdUser.getId()));
+                resp.getWriter().write(mapper.writeValueAsString(createdUser));
             } else {
                 System.out.println("Error");
             }
+
+
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+        } catch (Exception e) {
+            resp.setStatus(404); // BAD REQUEST
         }
     }
+
 }

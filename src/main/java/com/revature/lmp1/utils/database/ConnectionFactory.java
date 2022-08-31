@@ -29,6 +29,7 @@ public class ConnectionFactory {
             //It likes this url| Change url to absolute url right now, we have to figure out a better solution
             //props.load(new FileReader("C:\\Users\\coola\\Documents\\GitHub\\Leighton-Manuel-P1\\src\\main\\resources\\db.properties"));
             System.out.println(props.getProperty("url"));
+
         } catch (IOException e) {
             e.printStackTrace();
         }

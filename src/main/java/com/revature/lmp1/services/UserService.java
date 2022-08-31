@@ -1,12 +1,17 @@
 package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.UserDAO;
+import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
+import com.revature.lmp1.dtos.requests.UserIdRequest;
+import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.User;
+import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidUserException;
 import com.revature.lmp1.utils.custom_exceptions.ResourceConflictException;
 
+import java.util.Random;
 import java.util.UUID;
 
 
@@ -31,8 +36,8 @@ public class UserService {
                                 user = new User(
                                         UUID.randomUUID().toString(),
                                         request.getUsername(),
-                                        request.getPassword1(),
                                         request.getEmail(),
+                                        request.getPassword1(),
                                         request.getGivenName(),
                                         request.getSurname()
                                 );
@@ -47,32 +52,34 @@ public class UserService {
         return user;
     }
 
-    public User login(String username, String password) {
-        User user = userDAO.getByUsernameAndPassword(username, password);
-        if (user == null) throw new InvalidUserException("User not found");
-        return user;
+    public Principal login(LoginRequest request) {
+        User user = userDAO.getByUsernameAndPassword(request.getUsername(), request.getPassword());
+        if (user == null) throw new AuthenticationException("User not found");
+        if (!user.isActive()) throw new AuthenticationException("User is inactive");
+        return new Principal(user.getId(), user.getUsername(), user.getRoleId());
     }
 
     public void deleteUser(String id) {
         userDAO.delete(id);
     }
 
-    public User getById(String id) {
-        User user = userDAO.getById(id);
-        if (user == null) throw new InvalidUserException("User not found");
+    public User getById(UserIdRequest req) {
+        User user = userDAO.getById(req.getId());
+        if (user == null) throw new InvalidRequestException("User not found");
         return user;
     }
 
-    public void deactivateUser(String id) {
-        userDAO.setActive(id, false);
+    public void deactivateUser(UserIdRequest req) {
+        userDAO.setActive(req.getId(), false);
     }
 
-    public void activateUser(String id) {
-        userDAO.setActive(id, true);
+    public void activateUser(UserIdRequest req) {
+        userDAO.setActive(req.getId(), true);
     }
 
-    public void resetUserPassword(String id, String password) {
-        userDAO.resetPassword(id, password);
+    public void resetUserPassword(UserIdRequest req) {
+        String password = generatePassword();
+        userDAO.resetPassword(req.getId(), password);
     }
 
     public boolean isValidUsername(String username) {
@@ -106,5 +113,26 @@ public class UserService {
     public boolean isDuplicateEmail(String email) {
         if (userDAO.getEmail(email) != null) throw new ResourceConflictException("\nEmail not available!");
         return false;
+    }
+
+    public static String generatePassword() {
+        final String lowers = "abcdefghijklmnopqrstuvwxyz";
+        final String uppers = lowers.toUpperCase();
+        final String nums = "1234567890";
+        final String letsnums = lowers + uppers + nums;
+        char[] charset = letsnums.toCharArray();
+        char[] result = new char[12];
+
+        Random random = new Random();
+
+        for (int i = 0; i < result.length; i++) {
+            int r = random.nextInt(charset.length);
+            result[i] = charset[r];
+        }
+        StringBuilder sb = new StringBuilder();
+        for (char c : result) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }

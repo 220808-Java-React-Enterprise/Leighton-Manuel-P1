@@ -1,14 +1,37 @@
 package com.revature.lmp1.daos;
 
+import com.revature.lmp1.models.Reimb_Status;
+import com.revature.lmp1.models.Reimb_Type;
 import com.revature.lmp1.models.Reimbursement;
+import com.revature.lmp1.utils.custom_exceptions.InvalidSQLException;
+import com.revature.lmp1.utils.database.ConnectionFactory;
 
 import java.io.IOException;
+import java.sql.*;
 import java.util.List;
+
+import static java.sql.Types.NULL;
 
 public class ReimbDAO implements CrudDAO<Reimbursement>{
     @Override
-    public void save(Reimbursement obj) throws IOException {
-
+    public void save(Reimbursement obj) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id, amount, submitted, resolved, description, receipt, payment_id, author_id, resolver_id, status_id, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, obj.getId());
+            ps.setInt(2, obj.getAmount());
+            ps.setTimestamp(3, Timestamp.valueOf(obj.getSubmitted()));
+            ps.setNull(4, NULL);
+            ps.setString(5, obj.getDescription());
+            ps.setNull(6, NULL);
+            ps.setString(7, obj.getPaymentId());
+            ps.setString(8, obj.getAuthorId());
+            ps.setString(9, obj.getResolverId());
+            ps.setString(10, obj.getStatusId());
+            ps.setString(11, obj.getTypeId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error. Could not save user to database");
+        }
     }
 
     @Override
@@ -28,6 +51,40 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
 
     @Override
     public List<Reimbursement> getAll() {
+        return null;
+    }
+
+    public Reimb_Status getStatusById(String id) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursement_statuses WHERE status_id = ?");
+            ps.setString(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Reimb_Status(rs.getString("status_id"), rs.getString("status"));
+            }
+        }catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+
+        return null;
+    }
+
+    public Reimb_Type getTypeById(String id) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursement_types WHERE type_id = ?");
+            ps.setString(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new Reimb_Type(rs.getString("type_id"), rs.getString("type"));
+            }
+        }catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+
         return null;
     }
 }
