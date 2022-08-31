@@ -48,30 +48,9 @@ public class UserServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
+        } catch (Exception e) {
+            resp.setStatus(404); // BAD REQUEST
         }
     }
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            LoginRequest request1 = mapper.readValue(req.getInputStream(), LoginRequest.class);
-
-            String[] path = req.getRequestURI().split("/");
-
-            if (path[3].equals("login")) {
-                User currentUser = userService.login(request1);
-
-                resp.setStatus(200);
-                resp.setContentType("application/json");
-                resp.getWriter().write(mapper.writeValueAsString(currentUser.getId()));
-            } else {
-                System.out.println("Error");
-            }
-        }catch (InvalidRequestException e) {
-            resp.setStatus(404);
-            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
-        } catch (ResourceConflictException e) {
-            resp.setStatus(409);
-        }
-    }
 }
