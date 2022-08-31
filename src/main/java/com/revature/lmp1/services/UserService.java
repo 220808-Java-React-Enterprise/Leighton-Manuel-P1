@@ -3,11 +3,13 @@ package com.revature.lmp1.services;
 import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.dtos.requests.*;
 import com.revature.lmp1.dtos.responses.Principal;
+import com.revature.lmp1.models.Reimbursement;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
 import com.revature.lmp1.utils.custom_exceptions.ResourceConflictException;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -103,6 +105,7 @@ public class UserService {
             throw new InvalidRequestException("\nUsername must be between 3-15 characters and may only contain letters, numbers, dashes, and hyphens");
         return true;
     }
+
 
     public boolean isValidEmail(String email) {
         if (!email.matches("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"))
