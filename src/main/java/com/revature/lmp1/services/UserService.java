@@ -4,11 +4,11 @@ import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.dtos.requests.UserIdRequest;
+import com.revature.lmp1.dtos.requests.UserRequest;
 import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
-import com.revature.lmp1.utils.custom_exceptions.InvalidUserException;
 import com.revature.lmp1.utils.custom_exceptions.ResourceConflictException;
 
 import java.util.Random;
@@ -63,18 +63,32 @@ public class UserService {
         userDAO.delete(id);
     }
 
-    public User getById(UserIdRequest req) {
-        User user = userDAO.getById(req.getId());
+    public User getById(String id) {
+        User user = userDAO.getById(id);
         if (user == null) throw new InvalidRequestException("User not found");
         return user;
     }
 
-    public void deactivateUser(UserIdRequest req) {
-        userDAO.setActive(req.getId(), false);
+    public void deactivateUser(UserRequest req) {
+        if(isValidRole(req.getRole())) {
+            userDAO.setActive(req.getId(), false, userDAO.getRoleId(req.getRole()));
+        }
+
     }
 
-    public void activateUser(UserIdRequest req) {
-        userDAO.setActive(req.getId(), true);
+    public void activateUser(UserRequest req) {
+        if(isValidRole(req.getRole())) {
+            userDAO.setActive(req.getId(), true, userDAO.getRoleId(req.getRole()));
+        }
+    }
+
+    public boolean isValidRole(String role){
+        role = role.toLowerCase();
+        System.out.println(role);
+        if(role.equals("employee") == false && role.equals("finance_manager") == false && role.equals("admin") == false && role.equals("finance manager") == false){
+            throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
+        }
+        return true;
     }
 
     public void resetUserPassword(UserIdRequest req) {

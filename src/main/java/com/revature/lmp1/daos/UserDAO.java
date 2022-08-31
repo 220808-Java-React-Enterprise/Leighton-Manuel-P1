@@ -104,17 +104,34 @@ public class UserDAO implements CrudDAO<User>{
         return null;
     }
 
-    public void setActive(String id, boolean status) {
+    public void setActive(String id, boolean status, String role) {
         try(Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE users SET is_active = ? WHERE user_id = ?");
+            PreparedStatement ps = con.prepareStatement("UPDATE users SET is_active = ?,role_id = ? WHERE user_id = ?");
             ps.setBoolean(1, status);
-            ps.setString(2, id);
+            ps.setString(2, role);
+            ps.setString(3, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("Error connecting to database");
         }
 
     }
+
+    public String getRoleId(String role){
+        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM user_roles WHERE role = ?");
+
+            ps.setString(1,role);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("role_id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return null;
+    }
+
 
     public void resetPassword(String id, String password) {
         try(Connection con = ConnectionFactory.getInstance().getConnection()) {

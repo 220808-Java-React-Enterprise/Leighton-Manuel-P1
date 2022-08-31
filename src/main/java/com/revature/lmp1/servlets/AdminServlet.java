@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.dtos.requests.UserIdRequest;
+import com.revature.lmp1.dtos.requests.UserRequest;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.services.UserService;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
@@ -28,30 +29,34 @@ public class AdminServlet extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            UserIdRequest request = mapper.readValue(req.getInputStream(), UserIdRequest.class);
+            //UserRequest request = mapper.readValue(req.getInputStream(), UserRequest.class);
             User calledUser;
             String[] path = req.getRequestURI().split("/");
 
+
             switch (path[3]) {
                 case "activate":
+                    UserRequest request = mapper.readValue(req.getInputStream(), UserRequest.class);
                     userService.activateUser(request);
-                    calledUser = userService.getById(request);
+                    calledUser = userService.getById(request.getId());
 
                     resp.setStatus(200);
                     resp.setContentType("application/json");
                     resp.getWriter().write(mapper.writeValueAsString(calledUser));
                     break;
                 case "deactivate":
+                    request = mapper.readValue(req.getInputStream(), UserRequest.class);
                     userService.deactivateUser(request);
-                    calledUser = userService.getById(request);
+                    calledUser = userService.getById(request.getId());
 
                     resp.setStatus(200);
                     resp.setContentType("application/json");
                     resp.getWriter().write(mapper.writeValueAsString(calledUser));
                     break;
                 case "change_password":
-                    userService.resetUserPassword(request);
-                    calledUser = userService.getById(request);
+                    UserIdRequest request2 = mapper.readValue(req.getInputStream(), UserIdRequest.class);
+                    userService.resetUserPassword(request2);
+                    calledUser = userService.getById(request2.getId());
 
                     resp.setStatus(200);
                     resp.setContentType("application/json");
