@@ -45,6 +45,7 @@ public class AuthServlet extends HttpServlet {
             resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
         } catch (AuthenticationException e) {
             resp.setStatus(401);
+            resp.getWriter().write("No active user found with those credentials. To activate your account, contact admin.");
         } catch (Exception e) {
             resp.setStatus(404); // BAD REQUEST
         }
