@@ -1,10 +1,7 @@
 package com.revature.lmp1.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.revature.lmp1.dtos.requests.LoginRequest;
-import com.revature.lmp1.dtos.requests.NewUserRequest;
-import com.revature.lmp1.dtos.requests.UserIdRequest;
-import com.revature.lmp1.dtos.requests.UserRequest;
+import com.revature.lmp1.dtos.requests.*;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.services.UserService;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
@@ -54,9 +51,9 @@ public class AdminServlet extends HttpServlet {
                     resp.getWriter().write(mapper.writeValueAsString(calledUser));
                     break;
                 case "change_password":
-                    UserIdRequest request2 = mapper.readValue(req.getInputStream(), UserIdRequest.class);
-                    userService.resetUserPassword(request2);
-                    calledUser = userService.getById(request2.getId());
+                    PasswordResetRequest passRequest = mapper.readValue(req.getInputStream(), PasswordResetRequest.class);
+                    userService.resetUserPassword(passRequest);
+                    calledUser = userService.getById(passRequest.getId());
 
                     resp.setStatus(200);
                     resp.setContentType("application/json");

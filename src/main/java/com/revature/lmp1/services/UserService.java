@@ -1,10 +1,7 @@
 package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.UserDAO;
-import com.revature.lmp1.dtos.requests.LoginRequest;
-import com.revature.lmp1.dtos.requests.NewUserRequest;
-import com.revature.lmp1.dtos.requests.UserIdRequest;
-import com.revature.lmp1.dtos.requests.UserRequest;
+import com.revature.lmp1.dtos.requests.*;
 import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
@@ -91,9 +88,14 @@ public class UserService {
         return true;
     }
 
-    public void resetUserPassword(UserIdRequest req) {
-        String password = generatePassword();
-        userDAO.resetPassword(req.getId(), password);
+    public void resetUserPassword(PasswordResetRequest req) {
+        //String password = generatePassword();
+        if(isValidPassword(req.getPassword1())){
+            if(isSamePassword(req.getPassword1(),req.getPassword2())){
+                userDAO.resetPassword(req.getId(), req.getPassword1());
+            }
+        }
+
     }
 
     public boolean isValidUsername(String username) {

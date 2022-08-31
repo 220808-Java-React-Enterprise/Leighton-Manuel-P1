@@ -105,7 +105,7 @@ public class UserDAO implements CrudDAO<User>{
     }
 
     public void setActive(String id, boolean status, String role) {
-        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+        try(Connection con = ConnectionFactory.getInstance().getConnection( )) {
             PreparedStatement ps = con.prepareStatement("UPDATE users SET is_active = ?,role_id = ? WHERE user_id = ?");
             ps.setBoolean(1, status);
             ps.setString(2, role);
