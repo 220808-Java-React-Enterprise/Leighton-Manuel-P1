@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class Reimbursement {
     private String id;
-    private int amount;
+    private double amount;
     private LocalDateTime submitted;
     private LocalDateTime resolved;
     private String description;
@@ -19,7 +19,7 @@ public class Reimbursement {
     public Reimbursement() {
     }
 
-    public Reimbursement(String id, int amount, LocalDateTime submitted, LocalDateTime resolved,String description, Blob receipt, String payment_id, String author_id, String resolver_id, String status_id, String type_id){
+    public Reimbursement(String id, double amount, LocalDateTime submitted, LocalDateTime resolved,String description, Blob receipt, String payment_id, String author_id, String resolver_id, String status_id, String type_id){
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -40,7 +40,7 @@ public class Reimbursement {
         this.id = id;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 

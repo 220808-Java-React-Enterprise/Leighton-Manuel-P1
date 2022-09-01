@@ -82,12 +82,21 @@ public class UserService {
     }
 
     public boolean isValidRole(String role){
-        role = role.toLowerCase();
+        role = role.toLowerCase().trim();
         System.out.println(role);
         if(role.equals("employee") == false && role.equals("finance_manager") == false && role.equals("admin") == false && role.equals("finance manager") == false){
             throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
         }
         return true;
+    }
+
+    public User getUserByUsername(String username) {
+        if (userDAO.getUserByUsername(username) == null) throw new InvalidRequestException("\nInvalid request! There is no user by that username");
+        return userDAO.getUserByUsername(username);
+    }
+
+    public List<User> getAllUsers() {
+        return userDAO.getAll();
     }
 
     public void resetUserPassword(PasswordResetRequest req) {
