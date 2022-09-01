@@ -145,7 +145,6 @@ public class UserDAO implements CrudDAO<User>{
                 userList.add(user);
             }
 
-            System.out.println(userList.size());
         } catch (SQLException e) {
             throw new InvalidSQLException("An error occurred when tyring to save to the database.");
         }
