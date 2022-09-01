@@ -1,16 +1,15 @@
 package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.UserDAO;
-import com.revature.lmp1.dtos.requests.LoginRequest;
-import com.revature.lmp1.dtos.requests.NewUserRequest;
-import com.revature.lmp1.dtos.requests.UserIdRequest;
+import com.revature.lmp1.dtos.requests.*;
 import com.revature.lmp1.dtos.responses.Principal;
+import com.revature.lmp1.models.Reimbursement;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
-import com.revature.lmp1.utils.custom_exceptions.InvalidUserException;
 import com.revature.lmp1.utils.custom_exceptions.ResourceConflictException;
 
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -63,23 +62,42 @@ public class UserService {
         userDAO.delete(id);
     }
 
-    public User getById(UserIdRequest req) {
-        User user = userDAO.getById(req.getId());
+    public User getById(String id) {
+        User user = userDAO.getById(id);
         if (user == null) throw new InvalidRequestException("User not found");
         return user;
     }
 
-    public void deactivateUser(UserIdRequest req) {
-        userDAO.setActive(req.getId(), false);
+    public void deactivateUser(UserRequest req) {
+        if(isValidRole(req.getRole())) {
+            userDAO.setActive(req.getId(), false, userDAO.getRoleId(req.getRole()));
+        }
+
     }
 
-    public void activateUser(UserIdRequest req) {
-        userDAO.setActive(req.getId(), true);
+    public void activateUser(UserRequest req) {
+        if(isValidRole(req.getRole())) {
+            userDAO.setActive(req.getId(), true, userDAO.getRoleId(req.getRole()));
+        }
     }
 
-    public void resetUserPassword(UserIdRequest req) {
-        String password = generatePassword();
-        userDAO.resetPassword(req.getId(), password);
+    public boolean isValidRole(String role){
+        role = role.toLowerCase();
+        System.out.println(role);
+        if(role.equals("employee") == false && role.equals("finance_manager") == false && role.equals("admin") == false && role.equals("finance manager") == false){
+            throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
+        }
+        return true;
+    }
+
+    public void resetUserPassword(PasswordResetRequest req) {
+        //String password = generatePassword();
+        if(isValidPassword(req.getPassword1())){
+            if(isSamePassword(req.getPassword1(),req.getPassword2())){
+                userDAO.resetPassword(req.getId(), req.getPassword1());
+            }
+        }
+
     }
 
     public boolean isValidUsername(String username) {
@@ -87,6 +105,7 @@ public class UserService {
             throw new InvalidRequestException("\nUsername must be between 3-15 characters and may only contain letters, numbers, dashes, and hyphens");
         return true;
     }
+
 
     public boolean isValidEmail(String email) {
         if (!email.matches("[A-Za-z0-9._-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}"))

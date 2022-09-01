@@ -26,6 +26,7 @@ public class UserDAO implements CrudDAO<User>{
             ps.setNull(7, NULL);
             ps.setNull(8, NULL);
             ps.executeUpdate();
+            System.out.println("Got to the save part");
         } catch (SQLException e) {
             throw new InvalidSQLException("Error. Could not save user to database");
         }
@@ -77,6 +78,7 @@ public class UserDAO implements CrudDAO<User>{
         return null;
     }
 
+
     public User getByUsernameAndPassword(String username, String password) {
         try(Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
@@ -102,17 +104,34 @@ public class UserDAO implements CrudDAO<User>{
         return null;
     }
 
-    public void setActive(String id, boolean status) {
-        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("UPDATE users SET is_active = ? WHERE user_id = ?");
+    public void setActive(String id, boolean status, String role) {
+        try(Connection con = ConnectionFactory.getInstance().getConnection( )) {
+            PreparedStatement ps = con.prepareStatement("UPDATE users SET is_active = ?,role_id = ? WHERE user_id = ?");
             ps.setBoolean(1, status);
-            ps.setString(2, id);
+            ps.setString(2, role);
+            ps.setString(3, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new InvalidSQLException("Error connecting to database");
         }
 
     }
+
+    public String getRoleId(String role){
+        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM user_roles WHERE role = ?");
+
+            ps.setString(1,role);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("role_id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return null;
+    }
+
 
     public void resetPassword(String id, String password) {
         try(Connection con = ConnectionFactory.getInstance().getConnection()) {
@@ -128,7 +147,8 @@ public class UserDAO implements CrudDAO<User>{
 
     public String getUsername(String username) {
         try(Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT (username) FROM users WHERE username = ?");
+            PreparedStatement ps = con.prepareStatement("SELECT username FROM users WHERE username = ?");
+
             ps.setString(1,username);
             ResultSet rs = ps.executeQuery();
 
@@ -152,4 +172,5 @@ public class UserDAO implements CrudDAO<User>{
         }
         return null;
     }
+
 }

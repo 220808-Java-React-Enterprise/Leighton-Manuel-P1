@@ -8,6 +8,7 @@ import com.revature.lmp1.utils.database.ConnectionFactory;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.sql.Types.NULL;
@@ -52,6 +53,30 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     @Override
     public List<Reimbursement> getAll() {
         return null;
+    }
+
+    public List<Reimbursement> getAllByStatus(String status){
+        List<Reimbursement> reimbs = new ArrayList<Reimbursement>();
+
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements r, reimbursement_statuses rs WHERE r.status_id = rs.status_id AND rs.status = ?");
+            ps.setString(1,status);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                //Painting paint = new Painting(rs.getString("id"),rs.getString("name"),rs.getString("author"),rs.getString("image"),rs.getBoolean("is_available"),rs.getString("warehouse_id"),rs.getDouble("cost"));
+                //paintings.add(paint);
+                Reimbursement reimb = new Reimbursement(rs.getString("id"),rs.getInt("amount"),rs.getTimestamp("submitted").toLocalDateTime(),rs.getTimestamp("resolved").toLocalDateTime(),rs.getString("description"),null,rs.getString("payment_id"),rs.getString("author_id"),rs.getString("resolver_id"),rs.getString("status_id"),rs.getString("type_id"));
+                reimbs.add(reimb);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
+
+
+
+        return reimbs;
     }
 
     public Reimb_Status getStatusById(String id) {
