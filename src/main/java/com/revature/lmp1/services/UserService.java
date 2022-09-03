@@ -9,6 +9,8 @@ import com.revature.lmp1.utils.custom_exceptions.AuthenticationException;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
 import com.revature.lmp1.utils.custom_exceptions.ResourceConflictException;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -36,7 +38,7 @@ public class UserService {
                                         UUID.randomUUID().toString(),
                                         request.getUsername(),
                                         request.getEmail(),
-                                        request.getPassword1(),
+                                        hashPassword(request.getPassword1()),
                                         request.getGivenName(),
                                         request.getSurname()
                                 );
@@ -153,5 +155,24 @@ public class UserService {
             sb.append(c);
         }
         return sb.toString();
+    }
+
+    public String hashPassword(String pw) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(pw.getBytes());
+
+            byte[] b = md.digest();
+            StringBuilder sb = new StringBuilder();
+
+            for (byte i : b) {
+                sb.append(Integer.toString((i & 0xff) + 0x100, 16).substring(1));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

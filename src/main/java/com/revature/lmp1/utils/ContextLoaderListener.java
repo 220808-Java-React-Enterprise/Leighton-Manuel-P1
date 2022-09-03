@@ -17,17 +17,17 @@ public class ContextLoaderListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ObjectMapper mapper = new ObjectMapper();
 
-//        TestServlet testServlet = new TestServlet();
+        TestServlet testServlet = new TestServlet(mapper);
         UserServlet userServlet = new UserServlet(mapper, new UserService(new UserDAO()));
         AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UserDAO()), new TokenService(new JwtConfig()));
         AdminServlet adminServlet = new AdminServlet(mapper, new UserService(new UserDAO()));
         ManagerServlet managerServlet = new ManagerServlet(mapper, new UserService(new UserDAO()),new ReimbService(new ReimbDAO()));
 
         ServletContext context = sce.getServletContext();
-//        context.addServlet("TestServlet", testServlet).addMapping("/test");
+        context.addServlet("TestServlet", testServlet).addMapping("/test");
         context.addServlet("UserServlet", userServlet).addMapping("/users/*");
-        context.addServlet("Authservlet", authServlet).addMapping("/auth");
-        context.addServlet("Adminservlet", adminServlet).addMapping("/admin/*");
+        context.addServlet("AuthServlet", authServlet).addMapping("/auth");
+        context.addServlet("AdminServlet", adminServlet).addMapping("/admin/*");
         context.addServlet("ManagerServlet",managerServlet).addMapping("/manager/*");
     }
 
