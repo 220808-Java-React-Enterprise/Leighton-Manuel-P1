@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.sql.Types.NULL;
@@ -75,10 +76,7 @@ public class UserDAO implements CrudDAO<User>{
         return null;
     }
 
-    @Override
-    public List<User> getAll() {
-        return null;
-    }
+
 
 
     public User getByUsernameAndPassword(String username, String password) {
@@ -117,6 +115,43 @@ public class UserDAO implements CrudDAO<User>{
             throw new InvalidSQLException("Error connecting to database");
         }
 
+    }
+    public User getUserByUsername(String username) {
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users WHERE username = ?");
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new User(rs.getString("user_id"),rs.getString("username"),rs.getString("email"),rs.getString("password"),rs.getString("given_name"),rs.getString("surname"),rs.getBoolean("is_active"),rs.getString("role_id"));
+            }
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
+
+        return null;
+    }
+
+
+    @Override
+    public List<User> getAll() {
+        List<User> userList = new ArrayList<>();
+
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM users");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                User user = new User(rs.getString("user_id"),rs.getString("username"),rs.getString("email"),rs.getString("password"),rs.getString("given_name"),rs.getString("surname"),rs.getBoolean("is_active"),rs.getString("role_id"));
+                userList.add(user);
+            }
+
+        } catch (SQLException e) {
+            throw new InvalidSQLException("An error occurred when tyring to save to the database.");
+        }
+
+        return userList;
     }
 
     public String getRoleId(String role){

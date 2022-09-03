@@ -19,7 +19,7 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
             PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id, amount, submitted, resolved, description, receipt, payment_id, author_id, resolver_id, status_id, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getId());
-            ps.setInt(2, obj.getAmount());
+            ps.setDouble(2, obj.getAmount());
             ps.setTimestamp(3, Timestamp.valueOf(obj.getSubmitted()));
             ps.setNull(4, NULL);
             ps.setString(5, obj.getDescription());
