@@ -54,7 +54,7 @@ public class UserService {
     }
 
     public Principal login(LoginRequest request) {
-        User user = userDAO.getByUsernameAndPassword(request.getUsername(), request.getPassword());
+        User user = userDAO.getByUsernameAndPassword(request.getUsername(), hashPassword(request.getPassword()));
         if (user == null) throw new AuthenticationException("User not found");
         if (!user.isActive()) throw new AuthenticationException("User is inactive");
         return new Principal(user.getId(), user.getUsername(), user.getRoleId());
