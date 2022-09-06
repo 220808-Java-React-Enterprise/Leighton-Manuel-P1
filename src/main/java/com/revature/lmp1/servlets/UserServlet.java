@@ -66,12 +66,11 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String token = req.getHeader("Authorization");
-        Principal principal = tokenService.extractRequesterDetails(token);
+        //String token = req.getHeader("Authorization");
+        //Principal principal = tokenService.extractRequesterDetails(token);
 
         try {
             //1 is equivalent to admin
-            if (principal.getRole().equals("1")) {
                 String username = req.getParameter("username");
 
                 resp.setContentType("application/json");
@@ -82,9 +81,7 @@ public class UserServlet extends HttpServlet {
                     System.out.println(userList.size());
                     resp.getWriter().write(mapper.writeValueAsString(userList));
                 }
-            } else {
-                resp.setStatus(403); // FORBIDDEN
-            }
+
         } catch (NullPointerException e) {
             resp.setStatus(401); // UNAUTHORIZED
         } catch (InvalidRequestException e) {
