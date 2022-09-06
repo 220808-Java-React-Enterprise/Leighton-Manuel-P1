@@ -4,6 +4,8 @@ import com.revature.lmp1.models.User;
 import com.revature.lmp1.utils.custom_exceptions.InvalidSQLException;
 import com.revature.lmp1.utils.database.ConnectionFactory;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -207,5 +209,7 @@ public class UserDAO implements CrudDAO<User>{
         }
         return null;
     }
+
+
 
 }

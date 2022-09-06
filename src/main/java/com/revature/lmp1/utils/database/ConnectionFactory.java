@@ -1,5 +1,5 @@
 package com.revature.lmp1.utils.database;
-import java.io.File;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,13 +23,7 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {
         try {
-            //It does not like the url!
-            //System.out.println(new File("webapps/lmp1/WEB-INF/classes/db.properties").getAbsolutePath());
-            props.load(new FileReader("db.properties"));
-            //It likes this url| Change url to absolute url right now, we have to figure out a better solution
-            //props.load(new FileReader("C:\\Users\\coola\\Documents\\GitHub\\Leighton-Manuel-P1\\src\\main\\resources\\db.properties"));
-            //System.out.println(props.getProperty("url"));
-
+            props.load(new FileReader("webapps/lmp1/WEB-INF/classes/db.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
