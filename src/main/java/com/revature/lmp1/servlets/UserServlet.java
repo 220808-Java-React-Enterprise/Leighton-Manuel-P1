@@ -86,6 +86,9 @@ public class UserServlet extends HttpServlet {
             resp.setStatus(401); // UNAUTHORIZED
         } catch (InvalidRequestException e) {
             resp.setStatus(404);
+        } catch (Exception e){
+            resp.getWriter().write("Something unexpected went wrong!");
+            resp.setStatus(404);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.revature.lmp1.dtos.requests;
 
 public class ReimbHistoryRequest {
-    private String id;
     private String reimbStatus;
     private String date;
     private String order;
@@ -9,27 +8,21 @@ public class ReimbHistoryRequest {
     public ReimbHistoryRequest() {
     }
 
-    public ReimbHistoryRequest(String id, String reimbStatus, String date, String order) {
-        this.id = id;
+    public ReimbHistoryRequest(String reimbStatus, String date, String order) {
+
         this.reimbStatus = reimbStatus;
         this.date = date;
         this.order = order;
     }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
-    public String getStatus() {
+    public String getReimbStatus() {
         return reimbStatus;
     }
 
-    public void setStatus(String status) {
-        this.reimbStatus = status;
+    public void setReimbStatus(String reimbStatus) {
+        this.reimbStatus = reimbStatus;
     }
 
     public String getDate() {
@@ -51,7 +44,7 @@ public class ReimbHistoryRequest {
     @Override
     public String toString() {
         return "ReimbHistoryRequest{" +
-                "id='" + id + '\'' +
+
                 ", status='" + reimbStatus + '\'' +
                 ", date='" + date + '\'' +
                 ", order='" + order + '\'' +
