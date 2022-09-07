@@ -136,6 +136,8 @@ public class UserServiceTest {
 
         LoginRequest invalidReq = new LoginRequest(username, password);
 
+        Assert.assertNotNull(invalidReq);
+
         sut.login(invalidReq);
     }
 
