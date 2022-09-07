@@ -58,6 +58,16 @@ public class EmployeeServlet extends HttpServlet {
                     resp.getWriter().write(reimb.toString());
 
 
+                }else if (path[3].equals("view_history")) {
+                    ReimbHistoryRequest request = mapper.readValue(req.getInputStream(), ReimbHistoryRequest.class);
+                    List<Reimbursement> history = reimbService.getHistory(request, principal.getId());
+                    System.out.println("after list gotten");
+
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    for (Reimbursement i : history) {
+                        resp.getWriter().write(i.toString() + "\n");
+                    }
                 } else {
                     System.out.println("Error");
                 }
@@ -76,7 +86,9 @@ public class EmployeeServlet extends HttpServlet {
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatus(404); // BAD REQUEST
+            resp.getWriter().write("Something unpredictable went wrong!");
         }
     }
 
@@ -90,25 +102,16 @@ public class EmployeeServlet extends HttpServlet {
 
             if (principal.getRole().equals("3")) {
                 if (path[3].equals("view_pending")) {
-                    PendingReimbRequest request = mapper.readValue(req.getInputStream(), PendingReimbRequest.class);
-                    List<Reimbursement> pending = reimbService.getUserPending(request);
-
-                    resp.setStatus(200);
+                    //PendingReimbRequest request = mapper.readValue(req.getInputStream(), PendingReimbRequest.class);
+                    List<Reimbursement> pending = reimbService.getUserPending(principal.getId());
                     resp.setContentType("application/json");
                     for (Reimbursement i : pending) {
                         resp.getWriter().write(i.toString() + "\n");
                     }
-                }
-                if (path[3].equals("view_history")) {
-                    ReimbHistoryRequest request = mapper.readValue(req.getInputStream(), ReimbHistoryRequest.class);
-                    List<Reimbursement> history = reimbService.getHistory(request);
-
                     resp.setStatus(200);
-                    resp.setContentType("application/json");
-                    for (Reimbursement i : history) {
-                        resp.getWriter().write(i.toString() + "\n");
-                    }
                 }
+            } else{
+                resp.setStatus(403);
             }
         } catch (InvalidSQLException e){
             resp.setStatus(404);
@@ -116,7 +119,9 @@ public class EmployeeServlet extends HttpServlet {
         } catch (ResourceConflictException e) {
             resp.setStatus(409);
         } catch (Exception e) {
+            e.printStackTrace();
             resp.setStatus(404); // BAD REQUEST
+            resp.getWriter().write("Something unpredictable went wrong!");
         }
     }
 }
