@@ -112,4 +112,34 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
 
         return null;
     }
+
+    public List<String> getTypes() {
+        List<String> types = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT type FROM reimbursement_types");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                types.add(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return types;
+    }
+
+    public List<String> getStatuses() {
+        List<String> statuses = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT status FROM reimbursement_statuses");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                statuses.add(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return statuses;
+    }
 }

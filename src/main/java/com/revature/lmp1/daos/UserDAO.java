@@ -210,6 +210,19 @@ public class UserDAO implements CrudDAO<User>{
         return null;
     }
 
+    public List<String> getRoles() {
+        List<String> roles = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT role FROM user_roles");
+            ResultSet rs = ps.executeQuery();
 
+            while (rs.next()) {
+                roles.add(rs.getString("role"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
 
+        return roles;
+    }
 }

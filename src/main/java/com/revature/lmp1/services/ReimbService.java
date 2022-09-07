@@ -28,14 +28,13 @@ public class ReimbService {
     }
 
     public List<Reimbursement> getPending(){
-        List<Reimbursement> all = reimbDAO.getAllByStatus("pending");
-        return all;
+        return reimbDAO.getAllByStatus("pending");
     }
 
     public boolean isValidStatus(String status){
         status = status.toLowerCase().trim();
         System.out.print(status);
-        if(status.equals("approved") == false && status.equals("denied") == false && status.equals("pending") == false){
+        if(!reimbDAO.getStatuses().contains(status)){
             throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending");
         }
         return true;
@@ -43,7 +42,7 @@ public class ReimbService {
     public boolean isValidType(String type){
         type = type.toLowerCase().trim();
         System.out.println(type);
-        if(type.equals("lodging") == false && type.equals("travel") == false && type.equals("food") == false && type.equals("other") == false){
+        if(!reimbDAO.getTypes().contains(type)){
             throw new InvalidRequestException("\nInvalid Reimbursement Type! Reimbursements must belong to the category of (lodging/travel/food/other");
         }
         return true;
