@@ -225,13 +225,14 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     public List<String> getStatuses() {
         List<String> statuses = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT (status) FROM reimbursement_statuses");
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursement_statuses");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                statuses.add(rs.getString("type"));
+                statuses.add(rs.getString("status"));
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new InvalidSQLException("Error connecting to database");
         }
         return statuses;
@@ -240,28 +241,50 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     public List<Reimbursement> getReimbursementHistory(String id, String status, String sort, String order) {
         List<Reimbursement> history = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY ? ?");
+            PreparedStatement ps = null;
+            if(order == "ASC") {
+                 ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY ? ASC");
+            }
+            else{
+                ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY ? DESC");
+            }
             ps.setString(1, id);
             ps.setString(2, status);
             ps.setString(3, sort);
-            ps.setString(4, order);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                history.add(new Reimbursement(
-                        rs.getString("id"),
-                        rs.getInt("amount"),
-                        rs.getTimestamp("submitted").toLocalDateTime(),
-                        rs.getTimestamp("resolved").toLocalDateTime(),
-                        rs.getString("description"),null,
-                        rs.getString("payment_id"),
-                        rs.getString("author_id"),
-                        rs.getString("resolver_id"),
-                        rs.getString("status_id"),
-                        rs.getString("type_id")
-                ));
+                if(rs.getTimestamp("resolved") != null) {
+                    history.add(new Reimbursement(
+                            rs.getString("reimb_id"),
+                            rs.getInt("amount"),
+                            rs.getTimestamp("submitted").toLocalDateTime(),
+                            rs.getTimestamp("resolved").toLocalDateTime(),
+                            rs.getString("description"), null,
+                            rs.getString("payment_id"),
+                            rs.getString("author_id"),
+                            rs.getString("resolver_id"),
+                            rs.getString("status_id"),
+                            rs.getString("type_id")
+                    ));
+                }
+                else{
+                    history.add(new Reimbursement(
+                            rs.getString("reimb_id"),
+                            rs.getInt("amount"),
+                            rs.getTimestamp("submitted").toLocalDateTime(),
+                            null,
+                            rs.getString("description"), null,
+                            rs.getString("payment_id"),
+                            rs.getString("author_id"),
+                            rs.getString("resolver_id"),
+                            rs.getString("status_id"),
+                            rs.getString("type_id")
+                    ));
+                }
             }
         } catch (SQLException e) {
+                e.printStackTrace();
             throw new InvalidSQLException("Error connecting to database");
         }
 
@@ -271,17 +294,18 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     public List<Reimbursement> getPendingReimbursementsByUser(String id) {
         List<Reimbursement> history = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            System.out.println("attempted to view");
             PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY submitted ASC");
             ps.setString(1, id);
             ps.setString(2, "1");
             ResultSet rs = ps.executeQuery();
-
+            System.out.println("executed");
             while (rs.next()) {
                 history.add(new Reimbursement(
-                        rs.getString("id"),
-                        rs.getInt("amount"),
+                        rs.getString("reimb_id"),
+                        rs.getDouble("amount"),
                         rs.getTimestamp("submitted").toLocalDateTime(),
-                        rs.getTimestamp("resolved").toLocalDateTime(),
+                        null,
                         rs.getString("description"),null,
                         rs.getString("payment_id"),
                         rs.getString("author_id"),
@@ -291,6 +315,7 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
                 ));
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new InvalidSQLException("Error connecting to database");
         }
 

@@ -74,16 +74,17 @@ public class ReimbService {
         return true;
     }
 
-    public List<Reimbursement> getHistory(ReimbHistoryRequest request) {
-        String id = request.getId();
-        String status = request.getStatus().toLowerCase().trim();
+    public List<Reimbursement> getHistory(ReimbHistoryRequest request, String id) {
+        String status = request.getReimbStatus().toLowerCase().trim();
         String sort = request.getDate().toLowerCase().trim();
         String order = request.getOrder().toUpperCase().trim();
 
-        if(reimbDAO.getStatuses().contains(status)) {
+        List<String> test = reimbDAO.getStatuses();
+        System.out.println(test);
+        if(test.contains(status)) {
             if(sort.equals("submitted") || sort.equals("resolved") || sort.equals("amount")) {
                 if(order.equals("ASC") || order.equals("DESC")) {
-                    return reimbDAO.getReimbursementHistory(id, status, sort, order);
+                    return reimbDAO.getReimbursementHistory(id, reimbDAO.getStatusId(status), sort, order);
                 } else {
                     throw new InvalidRequestException("\nOrder not recognized, please enter either ASC for ascending or DESC for descending");
                 }
@@ -95,7 +96,7 @@ public class ReimbService {
         }
     }
 
-    public List<Reimbursement> getUserPending(PendingReimbRequest request) {
-        return reimbDAO.getPendingReimbursementsByUser(request.getId());
+    public List<Reimbursement> getUserPending(String id) {
+        return reimbDAO.getPendingReimbursementsByUser(id);
     }
 }

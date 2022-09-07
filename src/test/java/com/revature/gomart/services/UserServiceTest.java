@@ -100,7 +100,6 @@ public class UserServiceTest {
                 "New",
                 "User"
         );
-
         sut.register(request);
     }
 
@@ -133,10 +132,7 @@ public class UserServiceTest {
         );
 
         when(mockUserDao.getByUsernameAndPassword(username, password)).thenReturn(inactiveUser);
-
         LoginRequest invalidReq = new LoginRequest(username, password);
-
-        Assert.assertNotNull(invalidReq);
 
         sut.login(invalidReq);
     }
@@ -149,5 +145,6 @@ public class UserServiceTest {
 
         sut.getById(invalidId);
     }
+
 
 }
