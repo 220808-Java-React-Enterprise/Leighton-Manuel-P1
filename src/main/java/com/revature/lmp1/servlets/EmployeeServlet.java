@@ -3,6 +3,8 @@ package com.revature.lmp1.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.lmp1.dtos.requests.NewReimbRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
+import com.revature.lmp1.dtos.requests.PendingReimbRequest;
+import com.revature.lmp1.dtos.requests.ReimbHistoryRequest;
 import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.Reimbursement;
 import com.revature.lmp1.models.User;
@@ -81,8 +83,40 @@ public class EmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            String token = req.getHeader("Authorization");
+            String[] path = req.getRequestURI().split("/");
+            Principal principal = tokenService.extractRequesterDetails(token);
 
+            if (principal.getRole().equals("3")) {
+                if (path[3].equals("view_pending")) {
+                    PendingReimbRequest request = mapper.readValue(req.getInputStream(), PendingReimbRequest.class);
+                    List<Reimbursement> pending = reimbService.getUserPending(request);
 
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    for (Reimbursement i : pending) {
+                        resp.getWriter().write(i.toString() + "\n");
+                    }
+                }
+                if (path[3].equals("view_history")) {
+                    ReimbHistoryRequest request = mapper.readValue(req.getInputStream(), ReimbHistoryRequest.class);
+                    List<Reimbursement> history = reimbService.getHistory(request);
 
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    for (Reimbursement i : history) {
+                        resp.getWriter().write(i.toString() + "\n");
+                    }
+                }
+            }
+        } catch (InvalidSQLException e){
+            resp.setStatus(404);
+            resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+        } catch (ResourceConflictException e) {
+            resp.setStatus(409);
+        } catch (Exception e) {
+            resp.setStatus(404); // BAD REQUEST
+        }
     }
 }
