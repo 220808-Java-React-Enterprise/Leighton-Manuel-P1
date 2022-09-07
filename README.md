@@ -15,3 +15,73 @@ After creating an account and being approved, standard employees will have the o
 Finance managers may approve or deny requests made by standard employees. They may also view all the requests they have reviewed.
 
 ### Brief
+
+For the foundations module of your training you are tasked with building an API that will support a new internal expense reimbursement system. This system will manage the process of reimbursing employees for expenses incurred while on company time. All registered employees in the company can login and submit requests for reimbursement and view their past tickets and pending requests. Finance managers can log in and view all reimbursement requests and past history for all employees in the company. Finance managers are authorized to approve and deny requests for expense reimbursement.
+
+### Technology
+
+* Written in Java 8.
+* Apache Maven
+* PostgreSQL
+* Apache Tomcat 9
+* Jenkins
+* Amazon Elastic Compute Cloud (EC2)
+* Amazon Managed Relational Database Services (RDS)
+* Junit
+* Mockito
+
+### Roles
+
+* Admin
+* Finance Manager
+* Employee
+
+## Phases
+
+### Pre-phase (August 25, 2022)
+
+* Project requirements delivered
+
+### Phase 1 (August 29, 2022)
+
+* Remote repository is created and is being kept up to date
+* Core model classes are created 
+* Registration/Authentication/User operations in progress
+
+### Phase 2 (September 1, 2022)
+
+* Local DB instance running
+* App to DB connection made
+* Specified tables created with proper constraints
+* Registration/Authentication/User operations complete
+* Reimbursement operations in progress
+* Basic persistence layer operations in progress
+* Testing of business logic is in progress
+
+### Phase 3 (September 6, 2022)
+
+* Registration/Authentication web endpoints are accessible and functional
+* Reimbursement web endpoints are accessible and functional
+* User passwords are encrypted when persisted to the DB
+* Testing of business logic is in progress
+
+### Final (September 8, 2022)
+
+* Project Presentations
+
+## Technology
+
+* Written in Java 8.
+* Apache Maven
+* PostgreSQL
+* Apache Tomcat 9
+* Jenkins
+* Amazon Elastic Compute Cloud (EC2)
+* Amazon Managed Relational Database Services (RDS)
+* Junit
+* Mockito
+
+## Contributors
+
+* Leighton Albrecht
+* Manuel Lopez
