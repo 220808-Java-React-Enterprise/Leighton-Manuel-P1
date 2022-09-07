@@ -2,14 +2,14 @@ package com.revature.lmp1.dtos.requests;
 
 public class ReimbStatusRequest {
     private String id;
-    private String status;
+    private String currentStatus;
 
     public ReimbStatusRequest() {
     }
 
-    public ReimbStatusRequest(String id, String status) {
+    public ReimbStatusRequest(String id, String currentStatus) {
         this.id = id;
-        this.status = status;
+        this.currentStatus = currentStatus;
     }
 
     public String getId() {
@@ -20,18 +20,18 @@ public class ReimbStatusRequest {
         this.id = id;
     }
 
-    public String getStatus(){
-        return status;
+    public String getCurrentStatus(){
+        return currentStatus;
     }
     public void setStatus(String role){
-        this.status = status;
+        this.currentStatus = currentStatus;
     }
 
     @Override
     public String toString() {
         return "StatusRequest{" +
                 "id='" + id + '\'' +
-                "Status='" + status + '\'' +
+                "Status='" + currentStatus + '\'' +
                 '}';
     }
 }

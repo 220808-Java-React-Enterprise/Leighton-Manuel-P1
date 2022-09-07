@@ -44,10 +44,15 @@ public class ReimbService {
         return all;
     }
 
-    public void changeReimbStatus(ReimbStatusRequest req){
-        System.out.print(req.getStatus());
-        if(isValidStatus(req.getStatus())) {
-            reimbDAO.changeReimbStatus(req.getId(), reimbDAO.getStatusId(req.getStatus()));
+    public List<Reimbursement> getAllByResolver(String resolver_id){
+        List<Reimbursement> all = reimbDAO.getAllByResolver(resolver_id);
+        return all;
+    }
+
+    public void changeReimbStatus(ReimbStatusRequest req, String id){
+        System.out.print(req.getCurrentStatus());
+        if(isValidStatus(req.getCurrentStatus())) {
+            reimbDAO.changeReimbStatus(req.getId(), reimbDAO.getStatusId(req.getCurrentStatus()),id);
         }
     }
 

@@ -45,11 +45,11 @@ public class ManagerServlet extends HttpServlet {
                 String[] path = req.getRequestURI().split("/");
                 if (path[3].equals("manage_pending")) {
                     ReimbStatusRequest request = mapper.readValue(req.getInputStream(), ReimbStatusRequest.class);
-                    System.out.println(request.getStatus());
+                    System.out.println(request.getCurrentStatus());
                     System.out.println(request.getId());
-                    
+
                     //userService.activateUser(request);
-                    reimbService.changeReimbStatus(request);
+                    reimbService.changeReimbStatus(request,principal.getId());
 
                     //calledUser = userService.getById(request.getId());
 
@@ -79,7 +79,7 @@ public class ManagerServlet extends HttpServlet {
         if (principal.getRole().equals("2")) {
             try {
                 String[] path = req.getRequestURI().split("/");
-                if (path[3].equals("manage_pending")) {
+                /*if (path[3].equals("manage_pending")) {
                     ReimbStatusRequest request = mapper.readValue(req.getInputStream(), ReimbStatusRequest.class);
                     System.out.println(request.getStatus());
                     System.out.println(request.getId());
@@ -95,6 +95,8 @@ public class ManagerServlet extends HttpServlet {
                     resp.getWriter().write("Reimbursement changed!");
 
                 }
+
+                 */
             }catch (InvalidRequestException e) {
                 resp.setStatus(404);
                 resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
@@ -127,7 +129,17 @@ public class ManagerServlet extends HttpServlet {
                         //resp.getWriter().write(mapper.writeValueAsString(pending));
                         resp.getWriter().write(i.toString() + "\n");
                     }
-                } else {
+                }else if(path[3].equals("view_managed")){
+                    Object ArrayList;
+                    List<Reimbursement> reimbList = reimbService.getAllByResolver(principal.getId());
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    for(Reimbursement i : reimbList){
+                        //resp.getWriter().write(mapper.writeValueAsString(pending));
+                        resp.getWriter().write(i.toString() + "\n");
+                    }
+                }
+                else {
                     System.out.println("Error");
                 }
 
