@@ -17,22 +17,31 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     @Override
     public void save(Reimbursement obj) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            System.out.println("saving to database");
+            System.out.println("resolver id: " + obj.getResolverId());
             PreparedStatement ps = con.prepareStatement("INSERT INTO reimbursements (reimb_id, amount, submitted, resolved, description, receipt, payment_id, author_id, resolver_id, status_id, type_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, obj.getId());
             ps.setDouble(2, obj.getAmount());
             ps.setTimestamp(3, Timestamp.valueOf(obj.getSubmitted()));
+            //ps.setTimestamp(4, Timestamp.valueOf(obj.getResolved()));
             ps.setNull(4, NULL);
             ps.setString(5, obj.getDescription());
-            ps.setNull(6, NULL);
+            ps.setString(6, obj.getReceipt());
             ps.setString(7, obj.getPaymentId());
             ps.setString(8, obj.getAuthorId());
-            ps.setString(9, obj.getResolverId());
+            //ps.setString(9, obj.getResolverId());
+            ps.setString(9,obj.getResolverId());
             ps.setString(10, obj.getStatusId());
             ps.setString(11, obj.getTypeId());
             ps.executeUpdate();
+            System.out.println("Saved to database");
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new InvalidSQLException("Error. Could not save user to database");
+        } catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     @Override
@@ -78,6 +87,20 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
 
         return reimbs;
     }
+    public String getTypeId(String type){
+        try(Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursement_types WHERE type = ?");
+
+            ps.setString(1,type);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) return rs.getString("type_id");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return null;
+    }
 
     public Reimb_Status getStatusById(String id) {
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
@@ -116,7 +139,7 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     public List<String> getTypes() {
         List<String> types = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT type FROM reimbursement_types");
+            PreparedStatement ps = con.prepareStatement("SELECT (type) FROM reimbursement_types");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -131,7 +154,7 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
     public List<String> getStatuses() {
         List<String> statuses = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT status FROM reimbursement_statuses");
+            PreparedStatement ps = con.prepareStatement("SELECT (status) FROM reimbursement_statuses");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

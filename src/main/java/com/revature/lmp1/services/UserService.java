@@ -86,7 +86,7 @@ public class UserService {
     public boolean isValidRole(String role){
         role = role.toLowerCase().trim();
         System.out.println(role);
-        if(!role.equals("employee") && !role.equals("finance_manager") && !role.equals("admin") && !role.equals("finance manager")){
+        if(!userDAO.getRoles().contains(role)){
             throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
         }
         return true;

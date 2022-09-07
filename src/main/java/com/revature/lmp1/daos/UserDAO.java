@@ -213,7 +213,7 @@ public class UserDAO implements CrudDAO<User>{
     public List<String> getRoles() {
         List<String> roles = new ArrayList<>();
         try (Connection con = ConnectionFactory.getInstance().getConnection()) {
-            PreparedStatement ps = con.prepareStatement("SELECT role FROM user_roles");
+            PreparedStatement ps = con.prepareStatement("SELECT (role) FROM user_roles");
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

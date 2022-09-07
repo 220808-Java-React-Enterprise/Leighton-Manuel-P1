@@ -9,7 +9,7 @@ public class Reimbursement {
     private LocalDateTime submitted;
     private LocalDateTime resolved;
     private String description;
-    private Blob receipt;
+    private String receipt;
     private String payment_id;
     private String author_id;
     private String resolver_id;
@@ -19,7 +19,7 @@ public class Reimbursement {
     public Reimbursement() {
     }
 
-    public Reimbursement(String id, double amount, LocalDateTime submitted, LocalDateTime resolved,String description, Blob receipt, String payment_id, String author_id, String resolver_id, String status_id, String type_id){
+    public Reimbursement(String id, double amount, LocalDateTime submitted, LocalDateTime resolved,String description, String receipt, String payment_id, String author_id, String resolver_id, String status_id, String type_id){
         this.id = id;
         this.amount = amount;
         this.submitted = submitted;
@@ -72,11 +72,11 @@ public class Reimbursement {
         this.description = description;
     }
 
-    public Blob getReceipt() {
+    public String getReceipt() {
         return receipt;
     }
 
-    public void setReceipt(Blob receipt) {
+    public void setReceipt(String receipt) {
         this.receipt = receipt;
     }
 
