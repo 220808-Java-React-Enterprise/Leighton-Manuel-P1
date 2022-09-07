@@ -86,7 +86,7 @@ public class UserService {
     public boolean isValidRole(String role){
         role = role.toLowerCase().trim();
         System.out.println(role);
-        if(role.equals("employee") == false && role.equals("finance_manager") == false && role.equals("admin") == false && role.equals("finance manager") == false){
+        if(!userDAO.getRoles().contains(role)){
             throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
         }
         return true;
@@ -143,27 +143,6 @@ public class UserService {
     public boolean isDuplicateEmail(String email) {
         if (userDAO.getEmail(email) != null) throw new ResourceConflictException("\nEmail not available!");
         return false;
-    }
-
-    public static String generatePassword() {
-        final String lowers = "abcdefghijklmnopqrstuvwxyz";
-        final String uppers = lowers.toUpperCase();
-        final String nums = "1234567890";
-        final String letsnums = lowers + uppers + nums;
-        char[] charset = letsnums.toCharArray();
-        char[] result = new char[12];
-
-        Random random = new Random();
-
-        for (int i = 0; i < result.length; i++) {
-            int r = random.nextInt(charset.length);
-            result[i] = charset[r];
-        }
-        StringBuilder sb = new StringBuilder();
-        for (char c : result) {
-            sb.append(c);
-        }
-        return sb.toString();
     }
 
     public String hashPassword(String pw) {

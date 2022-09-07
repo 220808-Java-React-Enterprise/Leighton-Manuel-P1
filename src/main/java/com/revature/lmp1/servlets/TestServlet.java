@@ -17,7 +17,7 @@ public class TestServlet extends HttpServlet {
         this.mapper = mapper;
     }
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String request = mapper.readValue(req.getInputStream(), String.class);
         resp.getWriter().write("Hello");
         //resp.getWriter().write(hashPassword(request));

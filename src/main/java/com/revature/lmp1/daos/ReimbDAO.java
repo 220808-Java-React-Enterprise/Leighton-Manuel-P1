@@ -206,4 +206,94 @@ public class ReimbDAO implements CrudDAO<Reimbursement>{
 
         return null;
     }
+
+    public List<String> getTypes() {
+        List<String> types = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT (type) FROM reimbursement_types");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                types.add(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return types;
+    }
+
+    public List<String> getStatuses() {
+        List<String> statuses = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT (status) FROM reimbursement_statuses");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                statuses.add(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+        return statuses;
+    }
+
+    public List<Reimbursement> getReimbursementHistory(String id, String status, String sort, String order) {
+        List<Reimbursement> history = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY ? ?");
+            ps.setString(1, id);
+            ps.setString(2, status);
+            ps.setString(3, sort);
+            ps.setString(4, order);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                history.add(new Reimbursement(
+                        rs.getString("id"),
+                        rs.getInt("amount"),
+                        rs.getTimestamp("submitted").toLocalDateTime(),
+                        rs.getTimestamp("resolved").toLocalDateTime(),
+                        rs.getString("description"),null,
+                        rs.getString("payment_id"),
+                        rs.getString("author_id"),
+                        rs.getString("resolver_id"),
+                        rs.getString("status_id"),
+                        rs.getString("type_id")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+
+        return history;
+    }
+
+    public List<Reimbursement> getPendingReimbursementsByUser(String id) {
+        List<Reimbursement> history = new ArrayList<>();
+        try (Connection con = ConnectionFactory.getInstance().getConnection()) {
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM reimbursements WHERE author_id = ? AND status_id = ? ORDER BY submitted ASC");
+            ps.setString(1, id);
+            ps.setString(2, "1");
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                history.add(new Reimbursement(
+                        rs.getString("id"),
+                        rs.getInt("amount"),
+                        rs.getTimestamp("submitted").toLocalDateTime(),
+                        rs.getTimestamp("resolved").toLocalDateTime(),
+                        rs.getString("description"),null,
+                        rs.getString("payment_id"),
+                        rs.getString("author_id"),
+                        rs.getString("resolver_id"),
+                        rs.getString("status_id"),
+                        rs.getString("type_id")
+                ));
+            }
+        } catch (SQLException e) {
+            throw new InvalidSQLException("Error connecting to database");
+        }
+
+        return history;
+    }
 }

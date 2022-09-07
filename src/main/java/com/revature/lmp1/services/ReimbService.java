@@ -4,6 +4,8 @@ package com.revature.lmp1.services;
 import com.revature.lmp1.daos.ReimbDAO;
 import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.dtos.requests.NewReimbRequest;
+import com.revature.lmp1.dtos.requests.PendingReimbRequest;
+import com.revature.lmp1.dtos.requests.ReimbHistoryRequest;
 import com.revature.lmp1.dtos.requests.ReimbStatusRequest;
 import com.revature.lmp1.models.Reimbursement;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
@@ -40,8 +42,7 @@ public class ReimbService {
     }
 
     public List<Reimbursement> getPending(){
-        List<Reimbursement> all = reimbDAO.getAllByStatus("pending");
-        return all;
+        return reimbDAO.getAllByStatus("pending");
     }
 
     public List<Reimbursement> getAllByResolver(String resolver_id){
@@ -58,18 +59,43 @@ public class ReimbService {
 
     public boolean isValidStatus(String status){
         System.out.print(status);
-        status = status.toLowerCase().trim();
-        if(status.equals("approved") == false && status.equals("denied") == false && status.equals("pending") == false){
+        if(!reimbDAO.getStatuses().contains(status)){
+
             throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending");
         }
         return true;
     }
     public boolean isValidType(String type){
         type = type.toLowerCase().trim();
-        if(type.equals("lodging") == false && type.equals("travel") == false && type.equals("food") == false && type.equals("other") == false){
+        System.out.println(type);
+        if(!reimbDAO.getTypes().contains(type)){
             throw new InvalidRequestException("\nInvalid Reimbursement Type! Reimbursements must belong to the category of (lodging/travel/food/other");
         }
         return true;
     }
 
+    public List<Reimbursement> getHistory(ReimbHistoryRequest request) {
+        String id = request.getId();
+        String status = request.getStatus().toLowerCase().trim();
+        String sort = request.getDate().toLowerCase().trim();
+        String order = request.getOrder().toUpperCase().trim();
+
+        if(reimbDAO.getStatuses().contains(status)) {
+            if(sort.equals("submitted") || sort.equals("resolved") || sort.equals("amount")) {
+                if(order.equals("ASC") || order.equals("DESC")) {
+                    return reimbDAO.getReimbursementHistory(id, status, sort, order);
+                } else {
+                    throw new InvalidRequestException("\nOrder not recognized, please enter either ASC for ascending or DESC for descending");
+                }
+            } else {
+                throw new InvalidRequestException(("\nSort not recognized, pleased sort by either submitted, resolved, or amount"));
+            }
+        } else {
+            throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending");
+        }
+    }
+
+    public List<Reimbursement> getUserPending(PendingReimbRequest request) {
+        return reimbDAO.getPendingReimbursementsByUser(request.getId());
+    }
 }

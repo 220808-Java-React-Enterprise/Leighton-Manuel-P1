@@ -23,8 +23,8 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {
         try {
-            //props.load(new FileReader("webapps/lmp1/WEB-INF/classes/db.properties"));
-            props.load(new FileReader("db.properties"));
+            props.load(new FileReader("webapps/lmp1/WEB-INF/classes/db.properties"));
+//            props.load(new FileReader("db.properties"));
         } catch (IOException e) {
             e.printStackTrace();
         }
