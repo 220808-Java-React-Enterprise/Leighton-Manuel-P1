@@ -51,7 +51,10 @@ public class EmployeeServlet extends HttpServlet {
 
 
                     resp.setContentType("application/json");
-                    resp.getWriter().write(mapper.writeValueAsString(reimb));
+                    System.out.println("its here");
+                    //resp.getWriter().write("yay you did it");
+                    resp.getWriter().write(reimb.toString());
+
 
                 } else {
                     System.out.println("Error");
