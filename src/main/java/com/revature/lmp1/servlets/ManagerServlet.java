@@ -3,6 +3,7 @@ package com.revature.lmp1.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
 import com.revature.lmp1.dtos.requests.PasswordResetRequest;
+import com.revature.lmp1.dtos.requests.ReimbStatusRequest;
 import com.revature.lmp1.dtos.requests.UserRequest;
 import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.Reimbursement;
@@ -40,7 +41,31 @@ public class ManagerServlet extends HttpServlet {
         String token = req.getHeader("Authorization");
         Principal principal = tokenService.extractRequesterDetails(token);
         if (principal.getRole().equals("2")) {
+            try {
+                String[] path = req.getRequestURI().split("/");
+                if (path[3].equals("manage_pending")) {
+                    ReimbStatusRequest request = mapper.readValue(req.getInputStream(), ReimbStatusRequest.class);
+                    System.out.println(request.getStatus());
+                    System.out.println(request.getId());
+                    
+                    //userService.activateUser(request);
+                    reimbService.changeReimbStatus(request);
 
+                    //calledUser = userService.getById(request.getId());
+
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    resp.getWriter().write("Reimbursement changed!");
+
+                }
+            }catch (InvalidRequestException e) {
+                resp.setStatus(404);
+                resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+            } catch (ResourceConflictException e) {
+                resp.setStatus(409);
+            } catch (Exception e) {
+                resp.setStatus(404); // BAD REQUEST
+            }
         }
         else{
             resp.setStatus(403);
@@ -52,7 +77,32 @@ public class ManagerServlet extends HttpServlet {
         String token = req.getHeader("Authorization");
         Principal principal = tokenService.extractRequesterDetails(token);
         if (principal.getRole().equals("2")) {
+            try {
+                String[] path = req.getRequestURI().split("/");
+                if (path[3].equals("manage_pending")) {
+                    ReimbStatusRequest request = mapper.readValue(req.getInputStream(), ReimbStatusRequest.class);
+                    System.out.println(request.getStatus());
+                    System.out.println(request.getId());
 
+
+                    //userService.activateUser(request);
+                    reimbService.changeReimbStatus(request);
+
+                    //calledUser = userService.getById(request.getId());
+
+                    resp.setStatus(200);
+                    resp.setContentType("application/json");
+                    resp.getWriter().write("Reimbursement changed!");
+
+                }
+            }catch (InvalidRequestException e) {
+                resp.setStatus(404);
+                resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
+            } catch (ResourceConflictException e) {
+                resp.setStatus(409);
+            } catch (Exception e) {
+                resp.setStatus(404); // BAD REQUEST
+            }
         }
         else{
             resp.setStatus(403);
@@ -71,11 +121,12 @@ public class ManagerServlet extends HttpServlet {
                 if (path[3].equals("pending_reimbursements")) {
                     Object ArrayList;
                     List<Reimbursement> pending = reimbService.getPending();
-
-
                     resp.setStatus(200);
                     resp.setContentType("application/json");
-                    resp.getWriter().write(mapper.writeValueAsString(pending));
+                    for(Reimbursement i : pending){
+                        //resp.getWriter().write(mapper.writeValueAsString(pending));
+                        resp.getWriter().write(i.toString() + "\n");
+                    }
                 } else {
                     System.out.println("Error");
                 }
@@ -91,7 +142,7 @@ public class ManagerServlet extends HttpServlet {
             }
         }
         else{
-            resp.setStatus(403);
+            resp.setStatus(403); //forbidden
         }
     }
     }
