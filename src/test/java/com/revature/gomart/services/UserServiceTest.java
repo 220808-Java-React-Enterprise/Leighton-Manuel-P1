@@ -133,6 +133,7 @@ public class UserServiceTest {
 
         when(mockUserDao.getByUsernameAndPassword(username, password)).thenReturn(inactiveUser);
         LoginRequest invalidReq = new LoginRequest(username, password);
+
         sut.login(invalidReq);
     }
 
