@@ -19,8 +19,8 @@ public class TestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String request = mapper.readValue(req.getInputStream(), String.class);
-
-        resp.getWriter().write(hashPassword(request));
+        resp.getWriter().write("Hello");
+        //resp.getWriter().write(hashPassword(request));
     }
 
     public String hashPassword(String pw) {

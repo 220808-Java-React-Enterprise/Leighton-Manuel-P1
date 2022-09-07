@@ -20,8 +20,9 @@ public class ContextLoaderListener implements ServletContextListener {
         TestServlet testServlet = new TestServlet(mapper);
         UserServlet userServlet = new UserServlet(mapper,new TokenService(new JwtConfig()) ,new UserService(new UserDAO()));
         AuthServlet authServlet = new AuthServlet(mapper, new UserService(new UserDAO()), new TokenService(new JwtConfig()));
-        AdminServlet adminServlet = new AdminServlet(mapper, new UserService(new UserDAO()));
-        ManagerServlet managerServlet = new ManagerServlet(mapper, new UserService(new UserDAO()),new ReimbService(new ReimbDAO()));
+        AdminServlet adminServlet = new AdminServlet(mapper, new UserService(new UserDAO()), new TokenService(new JwtConfig()));
+        ManagerServlet managerServlet = new ManagerServlet(mapper, new UserService(new UserDAO()),new ReimbService(new ReimbDAO(), new UserDAO()), new TokenService(new JwtConfig()));
+        EmployeeServlet employeeServlet = new EmployeeServlet(mapper,new TokenService(new JwtConfig()), new UserService(new UserDAO()),new ReimbService(new ReimbDAO(), new UserDAO()));
 
         ServletContext context = sce.getServletContext();
         context.addServlet("TestServlet", testServlet).addMapping("/test");
@@ -29,6 +30,7 @@ public class ContextLoaderListener implements ServletContextListener {
         context.addServlet("AuthServlet", authServlet).addMapping("/auth");
         context.addServlet("AdminServlet", adminServlet).addMapping("/admin/*");
         context.addServlet("ManagerServlet",managerServlet).addMapping("/manager/*");
+        context.addServlet("EmployeeServlet",employeeServlet).addMapping("/employee/*");
     }
 
     @Override
