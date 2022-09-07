@@ -38,10 +38,11 @@ public class ManagerServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
         String token = req.getHeader("Authorization");
         Principal principal = tokenService.extractRequesterDetails(token);
         if (principal.getRole().equals("2")) {
-            try {
+
                 String[] path = req.getRequestURI().split("/");
                 if (path[3].equals("manage_pending")) {
                     ReimbStatusRequest request = mapper.readValue(req.getInputStream(), ReimbStatusRequest.class);
@@ -58,6 +59,11 @@ public class ManagerServlet extends HttpServlet {
                     resp.getWriter().write("Reimbursement changed!");
 
                 }
+
+        }
+        else{
+            resp.setStatus(403);
+        }
             }catch (InvalidRequestException e) {
                 resp.setStatus(404);
                 resp.getWriter().write(mapper.writeValueAsString(e.getMessage()));
@@ -66,10 +72,7 @@ public class ManagerServlet extends HttpServlet {
             } catch (Exception e) {
                 resp.setStatus(404); // BAD REQUEST
             }
-        }
-        else{
-            resp.setStatus(403);
-        }
+
     }
 
     @Override
@@ -112,10 +115,11 @@ public class ManagerServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
         String token = req.getHeader("Authorization");
         Principal principal = tokenService.extractRequesterDetails(token);
         if (principal.getRole().equals("2")) {
-            try {
+
                 //NewUserRequest request = mapper.readValue(req.getInputStream(), NewUserRequest.class);
 
                 String[] path = req.getRequestURI().split("/");
@@ -142,7 +146,9 @@ public class ManagerServlet extends HttpServlet {
                 else {
                     System.out.println("Error");
                 }
-
+        }else{
+            resp.setStatus(403); //forbidden
+        }
 
             } catch (InvalidRequestException e) {
                 resp.setStatus(404);
@@ -152,10 +158,8 @@ public class ManagerServlet extends HttpServlet {
             } catch (Exception e) {
                 resp.setStatus(404); // BAD REQUEST
             }
-        }
-        else{
-            resp.setStatus(403); //forbidden
-        }
+
+
     }
     }
 
