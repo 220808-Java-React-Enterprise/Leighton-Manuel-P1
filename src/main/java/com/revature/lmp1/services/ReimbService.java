@@ -6,6 +6,7 @@ import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.dtos.requests.NewReimbRequest;
 import com.revature.lmp1.dtos.requests.PendingReimbRequest;
 import com.revature.lmp1.dtos.requests.ReimbHistoryRequest;
+import com.revature.lmp1.dtos.requests.ReimbStatusRequest;
 import com.revature.lmp1.models.Reimbursement;
 import com.revature.lmp1.utils.custom_exceptions.InvalidRequestException;
 
@@ -44,10 +45,22 @@ public class ReimbService {
         return reimbDAO.getAllByStatus("pending");
     }
 
+    public List<Reimbursement> getAllByResolver(String resolver_id){
+        List<Reimbursement> all = reimbDAO.getAllByResolver(resolver_id);
+        return all;
+    }
+
+    public void changeReimbStatus(ReimbStatusRequest req, String id){
+        System.out.print(req.getCurrentStatus());
+        if(isValidStatus(req.getCurrentStatus())) {
+            reimbDAO.changeReimbStatus(req.getId(), reimbDAO.getStatusId(req.getCurrentStatus()),id);
+        }
+    }
+
     public boolean isValidStatus(String status){
-        status = status.toLowerCase().trim();
         System.out.print(status);
         if(!reimbDAO.getStatuses().contains(status)){
+
             throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending");
         }
         return true;
