@@ -27,6 +27,9 @@ For the foundations module of your training you are tasked with building an API 
 * Jenkins
 * Amazon Elastic Compute Cloud (EC2)
 * Amazon Managed Relational Database Services (RDS)
+* Postman
+* Docker
+* Java Web Tokens
 * Junit
 * Mockito
 
@@ -78,6 +81,9 @@ For the foundations module of your training you are tasked with building an API 
 * Jenkins
 * Amazon Elastic Compute Cloud (EC2)
 * Amazon Managed Relational Database Services (RDS)
+* Postman
+* Docker
+* Java Web Tokens
 * Junit
 * Mockito
 
