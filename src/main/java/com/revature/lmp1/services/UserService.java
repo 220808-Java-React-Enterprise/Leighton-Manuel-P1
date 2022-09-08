@@ -89,7 +89,7 @@ public class UserService {
         role = role.toLowerCase().trim();
         System.out.println(role);
         if(!userDAO.getRoles().contains(role)){
-            throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin");
+            throw new InvalidRequestException("\nThe role of a new employee must be real! (Employee/Finance Manager/Admin)");
         }
         return true;
     }
@@ -104,7 +104,6 @@ public class UserService {
     }
 
     public void resetUserPassword(PasswordResetRequest req) {
-        //String password = generatePassword();
         if(isValidPassword(req.getPassword1())){
             if(isSamePassword(req.getPassword1(),req.getPassword2())){
                 userDAO.resetPassword(req.getId(), req.getPassword1());
