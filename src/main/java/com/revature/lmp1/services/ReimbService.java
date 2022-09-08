@@ -61,7 +61,7 @@ public class ReimbService {
         System.out.print(status);
         if(!reimbDAO.getStatuses().contains(status)){
 
-            throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending");
+            throw new InvalidRequestException("\nInvalid Status! A reimbursement can only be (approved/denied/pending)");
         }
         return true;
     }

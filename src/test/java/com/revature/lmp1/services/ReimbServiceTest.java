@@ -1,4 +1,4 @@
-package com.revature.gomart.services;
+package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.ReimbDAO;
 import com.revature.lmp1.daos.UserDAO;
@@ -10,6 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -23,30 +26,23 @@ public class ReimbServiceTest {
 
     @Before
     public void setup() {sut = new ReimbService(mockReimbDAO, mockUserDAO);}
-    /*
 
     @Test
     public void test_IsValidStatus_GivenValid(){
-        //Arrange
-
         ReimbService spiedSut = Mockito.spy(sut);
         String validStatus = "pending";
+        List<String> statuses = new ArrayList<>();
+        statuses.add("pending");
+        statuses.add("approved");
+        statuses.add("denied");
+
+        when(mockReimbDAO.getStatuses()).thenReturn(statuses);
+
         when(spiedSut.isValidStatus(validStatus)).thenReturn(true);
         boolean flag = sut.isValidStatus(validStatus);
         Assert.assertTrue(flag);
 
-
-        when(spiedSut.isValidPassword(validPassword)).thenReturn(true);
-        when(mockUserDao.getUserByUsernameAndPassword(validUsername, validPassword)).thenReturn(new User());
-
-        // Act
-        User user = spiedSut.login(validUsername, validPassword);
-
-        // Assert
-        Assert.assertNotNull(user);
-        verify(mockUserDao, times(1)).getUserByUsernameAndPassword(validUsername, validPassword);
-
-
+        sut.isValidStatus(validStatus);
     }
 
 
@@ -54,12 +50,18 @@ public class ReimbServiceTest {
     public void test_getHistory_givenValid(){
         ReimbHistoryRequest request = new ReimbHistoryRequest("pending","submitted","ASC");
         String id = "valid";
+        List<String> statuses = new ArrayList<>();
+        statuses.add("pending");
+        statuses.add("approved");
+        statuses.add("denied");
+
+        when(mockReimbDAO.getStatuses()).thenReturn(statuses);
         sut.getHistory(request,id);
 
     }
 
 
-     */
+
     @Test(expected = InvalidRequestException.class)
     public void test_IsValidStatus_GivenNothing() {
         String invalidStatus = "";

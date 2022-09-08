@@ -1,8 +1,10 @@
-package com.revature.gomart.services;
+package com.revature.lmp1.services;
 
 import com.revature.lmp1.daos.UserDAO;
 import com.revature.lmp1.dtos.requests.LoginRequest;
 import com.revature.lmp1.dtos.requests.NewUserRequest;
+import com.revature.lmp1.dtos.requests.PasswordResetRequest;
+import com.revature.lmp1.dtos.requests.UserRequest;
 import com.revature.lmp1.dtos.responses.Principal;
 import com.revature.lmp1.models.User;
 import com.revature.lmp1.services.UserService;
@@ -15,6 +17,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.omg.CORBA.DynAnyPackage.Invalid;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
@@ -144,6 +149,81 @@ public class UserServiceTest {
         when(mockUserDao.getById(invalidId)).thenReturn(null);
 
         sut.getById(invalidId);
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void test_isInvalidActivateRequest_givenInvalidCredentials() {
+        UserService spiedSut = Mockito.spy(sut);
+        UserRequest invalidRequest = new UserRequest("0001", "Janitor");
+
+        when(spiedSut.isValidRole(invalidRequest.getRole())).thenReturn(false);
+
+        sut.activateUser(invalidRequest);
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void test_isInvalidDeactivateRequest_givenInvalidCredentials() {
+        UserService spiedSut = Mockito.spy(sut);
+        UserRequest invalidRequest = new UserRequest("0001", "Janitor");
+
+        when(spiedSut.isValidRole(invalidRequest.getRole())).thenReturn(false);
+
+        sut.deactivateUser(invalidRequest);
+    }
+
+    @Test
+    public void test_isValidRole_givenValidRole() {
+        UserService spiedSut = Mockito.spy(sut);
+        String validRole = "employee";
+        List<String> validRoles = new ArrayList<>();
+        validRoles.add("employee");
+        validRoles.add("admin");
+        validRoles.add("manager");
+
+        when(mockUserDao.getRoles()).thenReturn(validRoles);
+        when(spiedSut.isValidRole(validRole)).thenReturn(true);
+
+        sut.isValidRole(validRole);
+    }
+
+    @Test(expected = InvalidRequestException.class)
+    public void test_isInvalidUsernameRequest_givenNonexistentUser() {
+        UserService spiedSut = Mockito.spy(sut);
+        String invalidUsername = "username";
+
+        when(spiedSut.isValidUsername(invalidUsername)).thenReturn(true);
+        when(mockUserDao.getUserByUsername(invalidUsername)).thenReturn(null);
+
+        sut.getUserByUsername(invalidUsername);
+    }
+
+    @Test
+    public void test_resetUserPassword_givenValidPasswords() {
+        UserService spiedSut = Mockito.spy(sut);
+        String validPassword1 = "P@ssw0rd";
+        String validPassword2 = "P@ssw0rd";
+        PasswordResetRequest validReq = new PasswordResetRequest("0001",validPassword1,validPassword2);
+
+
+        when(spiedSut.isValidPassword(validPassword1)).thenReturn(true);
+        when(spiedSut.isSamePassword(validPassword1, validPassword2)).thenReturn(true);
+        when(mockUserDao.getById(validReq.getId())).thenReturn(new User());
+
+        User user = spiedSut.getById(validReq.getId());
+
+        Assert.assertNotNull(user);
+
+        sut.resetUserPassword(validReq);
+    }
+
+    @Test
+    public void test_hashPassword_givenValidPassword() {
+        UserService spiedSut = Mockito.spy(sut);
+        String validPassword = "P@ssw0rd";
+
+        when(spiedSut.isValidPassword(validPassword)).thenReturn(true);
+
+        sut.hashPassword(validPassword);
     }
 
 
